@@ -57,33 +57,33 @@ public class LcdManager {
 				dataBit1, dataBit2, dataBit3, dataBit4);
 		lcdString = new char[LCD_ROWS][LCD_COLUMNS];
 		this.f1data = data;
-
-		screenThread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (!stopThread) {
-					try {
-						lcdWrite(
-								f1data.getSpeed() + "km/h " + " G : "
-										+ f1data.getGear(), 0);
-						lcdWrite(Utils.doubleToTime(f1data.getTime()) + " "
-								+ "P : " + f1data.getPosition(), 1);
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-				}
-			}
-		});
 	}
 
 	/**
 	 * Start screen refresh.
 	 */
 	public void startRefresh() {
-		screenThread.start();
+		if (screenThread == null || !screenThread.isAlive()) {
+			screenThread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					while (!stopThread) {
+						try {
+							lcdWrite(f1data.getSpeed() + "km/h " + " G : "
+									+ f1data.getGear(), 0);
+							lcdWrite(Utils.doubleToTime(f1data.getTime()) + " "
+									+ "P : " + f1data.getPosition(), 1);
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+					}
+				}
+			});
+			screenThread.start();
+		}
 	}
 
 	/**
@@ -143,13 +143,14 @@ public class LcdManager {
 	 * Stop screen refresh at the end.
 	 */
 	public void finishThread() {
-		this.stopThread = true;
-		try {
-			screenThread.join();
-			System.out.println("Fermeture thread LCD");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (screenThread != null && screenThread.isAlive()) {
+			this.stopThread = true;
+			try {
+				screenThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			lcd.clear();
 		}
-		lcd.clear();
 	}
 }
