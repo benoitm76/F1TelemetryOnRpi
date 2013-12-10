@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project Telemetry with Jar-in-Jar Loader">
+<project default="createJar" name="Create Runnable Jar for Project Telemetry with Jar-in-Jar Loader">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
-    <target name="create_run_jar">
-        <jar destfile="D:/Users/Benoit/Desktop/test.jar">
+    
+    <property name="dist"  location="dist"/>
+    <property name="lib" location="lib"/>
+    <property name="bin" location="bin"/>
+    
+    <target name="createJar">
+        <!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/>
+        <jar destfile="./dist/F1TelemetryOnRpi.jar">
+            <!-- Include libs into jar -->
+			<zipgroupfileset dir="${lib}" includes="*.jar"/>
             <manifest>
-                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-                <attribute name="Rsrc-Main-Class" value="fr.code4pi.Main"/>
-                <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ pi4j-core.jar pi4j-device.jar pi4j-gpio-extension.jar"/>
+                <attribute name="Main-Class" value="fr.code4pi.Main"/>
+                <attribute name="Class-Path" value="pi4j-core.jar pi4j-device.jar pi4j-gpio-extension.jar"/>
             </manifest>
-            <zipfileset src="jar-in-jar-loader.zip"/>
-            <fileset dir="D:/Users/Benoit/workspace/Telemetry/bin"/>
-            <zipfileset dir="D:\Users\Benoit\workspace\Telemetry\lib" includes="pi4j-core.jar"/>
-            <zipfileset dir="D:\Users\Benoit\workspace\Telemetry\lib" includes="pi4j-device.jar"/>
-            <zipfileset dir="D:\Users\Benoit\workspace\Telemetry\lib" includes="pi4j-gpio-extension.jar"/>
+            <fileset dir="${bin}"/>
         </jar>
     </target>
 </project>
