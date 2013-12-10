@@ -14,11 +14,6 @@ public class F1Data {
 	private double engineRpm;
 	private int position;
 	
-	public F1Data()
-	{
-		
-	}
-	
 	/**
 	 * Update data with array of double from the game.
 	 * 

@@ -11,6 +11,12 @@ import fr.code4pi.gpio.LedManager;
 import fr.code4pi.telemetry.F1Data;
 import fr.code4pi.tools.Utils;
 
+/**
+ * Main class of F1TelemetryOnRpi.
+ * 
+ * @author Benoit Mouquet
+ * 
+ */
 public class Main {
 
 	private LedManager led;
@@ -18,11 +24,19 @@ public class Main {
 	private F1Data curData;
 	private DatagramSocket localDatagramSocket;
 
+	/**
+	 * Main method.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		new Main();
 
 	}
 
+	/**
+	 * Constructor of the app.
+	 */
 	public Main() {
 
 		led = new LedManager(RaspiPin.GPIO_07, RaspiPin.GPIO_09,
@@ -30,18 +44,15 @@ public class Main {
 
 		curData = new F1Data();
 
-		lcd = new LcdManager(RaspiPin.GPIO_11, // LCD RS pin
-				RaspiPin.GPIO_10, // LCD strobe pin
-				RaspiPin.GPIO_06, // LCD data bit 1
-				RaspiPin.GPIO_05, // LCD data bit 2
-				RaspiPin.GPIO_04, // LCD data bit 3
-				RaspiPin.GPIO_01, curData); // LCD data bit 4
+		lcd = new LcdManager(RaspiPin.GPIO_11, RaspiPin.GPIO_10,
+				RaspiPin.GPIO_06, RaspiPin.GPIO_05, RaspiPin.GPIO_04,
+				RaspiPin.GPIO_01, curData);
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				if (localDatagramSocket != null
 						&& !localDatagramSocket.isClosed()) {
-					localDatagramSocket.close();					
+					localDatagramSocket.close();
 				}
 				led.finishThread();
 				lcd.finishThread();

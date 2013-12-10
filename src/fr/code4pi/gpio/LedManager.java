@@ -11,102 +11,115 @@ import com.pi4j.io.gpio.PinState;
 
 import fr.code4pi.thread.LedBlinking;
 
+/**
+ * Class to manage Led.
+ * 
+ * @author Benoit Mouquet
+ * 
+ */
 public class LedManager {
 
-	private GpioPinDigitalOutput bleu, pink, orange;
+	private GpioPinDigitalOutput pin1, pin2, pin3;
 	private LedBlinking ledBlinking;
+	
+	/**
+	 * Limit when led of pin 1 turn on.
+	 */
+	public final static int RPM_FOR_PIN1 = 1780;
+	/**
+	 * Limit when led of pin 2 turn on.
+	 */
+	public final static int RPM_FOR_PIN2 = 1830;
+	/**
+	 * Limit when led of pin 3 turn on.
+	 */
+	public final static int RPM_FOR_PIN3 = 1870;
+	/**
+	 * Limit when all led blinking.
+	 */
+	public final static int RPM_FOR_BLINKING = 1880;
 
-	public LedManager(Pin bleuPin, Pin orangePin, Pin pinkPin) {
+	/**
+	 * Constructor of class.
+	 * 
+	 * @param pin1
+	 *            Pin for first line of led.
+	 * @param pin2
+	 *            Pin for second line of led.
+	 * @param pin3
+	 *            Pin for third line of led.
+	 */
+	public LedManager(Pin pin1, Pin pin2, Pin pin3) {
 		GpioController gpio = GpioFactory.getInstance();
-		bleu = gpio.provisionDigitalOutputPin(bleuPin, "MyLED", PinState.HIGH);
+		this.pin1 = gpio.provisionDigitalOutputPin(pin1, "MyLED", PinState.LOW);
 
-		pink = gpio.provisionDigitalOutputPin(pinkPin, "MyLED", PinState.HIGH);
+		this.pin2 = gpio.provisionDigitalOutputPin(pin2, "MyLED", PinState.LOW);
 
-		orange = gpio.provisionDigitalOutputPin(orangePin, "MyLED",
-				PinState.HIGH);
+		this.pin3 = gpio.provisionDigitalOutputPin(pin3, "MyLED", PinState.LOW);
 
 		List<GpioPinDigitalOutput> gpioLed = new ArrayList<GpioPinDigitalOutput>();
-		gpioLed.add(bleu);
-		gpioLed.add(pink);
-		gpioLed.add(orange);
+		gpioLed.add(this.pin1);
+		gpioLed.add(this.pin2);
+		gpioLed.add(this.pin3);
 
 		ledBlinking = new LedBlinking(gpioLed);
-		
-		bleu.low();
-		orange.low();
-		pink.low();
 	}
 
+	/**
+	 * @param rpm
+	 */
 	public void updateLed(double rpm) {
-		if (rpm >= 1780 && rpm < 1830) {
-			if (ledBlinking.isAlive()) {
-				ledBlinking.stopThread();
-				try {
-					ledBlinking.waitForThread();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			bleu.high();
-			orange.low();
-			pink.low();
-		} else if (rpm >= 1830 && rpm < 1870) {
-			if (ledBlinking.isAlive()) {
-				ledBlinking.stopThread();
-				try {
-					ledBlinking.waitForThread();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			bleu.high();
-			orange.high();
-			pink.low();
-		} else if (rpm >= 1870 && rpm < 1880) {
-			if (ledBlinking.isAlive()) {
-				ledBlinking.stopThread();
-				try {
-					ledBlinking.waitForThread();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			bleu.high();
-			orange.high();
-			pink.high();
-		} else if (rpm >= 1880) {
+		if (rpm >= RPM_FOR_PIN1 && rpm < RPM_FOR_PIN2) {
+			stopBlinking();
+			pin1.high();
+			pin2.low();
+			pin3.low();
+		} else if (rpm >= RPM_FOR_PIN2 && rpm < RPM_FOR_PIN3) {
+			stopBlinking();
+			pin1.high();
+			pin2.high();
+			pin3.low();
+		} else if (rpm >= RPM_FOR_PIN3 && rpm < RPM_FOR_BLINKING) {
+			stopBlinking();
+			pin1.high();
+			pin2.high();
+			pin3.high();
+		} else if (rpm >= RPM_FOR_BLINKING) {
 			if (!ledBlinking.isAlive()) {
 				ledBlinking.startThread();
 			}
 
 		} else {
-			if (ledBlinking.isAlive()) {
-				ledBlinking.stopThread();
-				try {
-					ledBlinking.waitForThread();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			bleu.low();
-			orange.low();
-			pink.low();
+			stopBlinking();
+			pin1.low();
+			pin2.low();
+			pin3.low();
 		}
 	}
 
+	/**
+	 * Method call at the end to turn off led and stop blinking.
+	 */
 	public void finishThread() {
+		stopBlinking();
+		pin1.low();
+		pin2.low();
+		pin3.low();
+	}
+	
+	/**
+	 * Stop led blinking.
+	 */
+	private void stopBlinking()
+	{
 		if (ledBlinking.isAlive()) {
 			ledBlinking.stopThread();
 			try {
 				ledBlinking.waitForThread();
-				System.out.println("Fermeture thread Led");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		bleu.low();
-		orange.low();
-		pink.low();
 	}
 
 }
