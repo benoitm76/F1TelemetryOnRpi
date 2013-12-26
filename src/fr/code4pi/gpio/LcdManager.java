@@ -34,6 +34,36 @@ public class LcdManager {
 	public final static int LCD_REFRESH_TIME = 200;
 
 	/**
+	 * Name of RS pin parameter in properties file.
+	 */
+	public final static String LCD_PIN_RS = "lcd_rs";
+
+	/**
+	 * Name of Strobe pin parameter in properties file.
+	 */
+	public final static String LCD_PIN_STROBE = "lcd_strobe";
+
+	/**
+	 * Name of bit 1 pin parameter in properties file.
+	 */
+	public final static String LCD_PIN_BIT_1 = "lcd_bit_1";
+
+	/**
+	 * Name of bit 2 pin parameter in properties file.
+	 */
+	public final static String LCD_PIN_BIT_2 = "lcd_bit_2";
+
+	/**
+	 * Name of bit 3 pin parameter in properties file.
+	 */
+	public final static String LCD_PIN_BIT_3 = "lcd_bit_3";
+
+	/**
+	 * Name of bit 4 pin parameter in properties file.
+	 */
+	public final static String LCD_PIN_BIT_4 = "lcd_bit_4";
+
+	/**
 	 * Constructor of lcd manager.
 	 * 
 	 * @param rsPin
@@ -70,11 +100,11 @@ public class LcdManager {
 				public void run() {
 					while (!stopThread) {
 						try {
-							lcdWrite(f1data.getSpeed() + "km/h " + " G : "
-									+ f1data.getGear(), 0);
+							lcdWrite(String.format("%3d", f1data.getSpeed())
+									+ "km/h " + " G : " + f1data.getGear(), 0);
 							lcdWrite(Utils.doubleToTime(f1data.getTime()) + " "
 									+ "P : " + f1data.getPosition(), 1);
-							Thread.sleep(200);
+							Thread.sleep(50);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}

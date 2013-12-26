@@ -1,7 +1,7 @@
 package fr.code4pi.telemetry;
 
 /**
- * Class to store useful data from the game
+ * Class to store useful data from the game.
  * 
  * @author Benoit Mouquet
  *

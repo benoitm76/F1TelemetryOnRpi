@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="createJar"
-	name="Generate JAR for F1TelemetryOnRpi">
+<project default="createJar" name="Generate JAR for F1TelemetryOnRpi">
 	<!--ANT 1.7 is required -->
 	<property name="dist" location="dist" />
 	<property name="lib" location="lib" />
@@ -9,15 +8,15 @@
 	<target name="createJar">
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}" />
-		<jar destfile="./dist/F1TelemetryOnRpi.jar">
+		<jar destfile="${dist}/F1TelemetryOnRpi.jar">
 			<!-- Include libs into jar -->
 			<zipgroupfileset dir="${lib}" includes="*.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="fr.code4pi.Main" />
-				<attribute name="Class-Path"
-					value="pi4j-core.jar pi4j-device.jar pi4j-gpio-extension.jar" />
+				<attribute name="Class-Path" value="pi4j-core.jar pi4j-device.jar pi4j-gpio-extension.jar" />
 			</manifest>
 			<fileset dir="${bin}" />
 		</jar>
+		<copy file="config.properties" todir="${dist}" />
 	</target>
 </project>

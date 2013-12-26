@@ -7,4 +7,4 @@ Afin de pouvoir compiler ce projet, vous aurez besoin de la librairie **Pi4J** (
 
 Les fichiers .jar de la librairie Pi4J devront être placés dans un dossier **lib** à la racine de votre projet.
 
-Afin d'obtenir un fichier .jar à exécuter sur votre Raspberry Pi, il vous suffit de compiler le projet avec ant.
+Afin d'obtenir un fichier .jar à exécuter sur votre Raspberry Pi, il vous suffit de compiler le projet avec ant. Le .jar sera alors disponible au sien du dossier dist.
