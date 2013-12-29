@@ -44,21 +44,6 @@ public class LedManager {
 	public final static int RPM_FOR_BLINKING = 1880;
 
 	/**
-	 * Name of first leds pin parameter in properties file.
-	 */
-	public final static String LED_PIN_FIRST_LEDS = "led_first_leds";
-
-	/**
-	 * Name of second leds pin parameter in properties file.
-	 */
-	public final static String LED_PIN_SECOND_LEDS = "led_second_leds";
-
-	/**
-	 * Name of third leds pin parameter in properties file.
-	 */
-	public final static String LED_PIN_THIRD_LEDS = "led_third_leds";
-
-	/**
 	 * Constructor of class.
 	 * 
 	 * @param pin1
@@ -87,10 +72,14 @@ public class LedManager {
 	/**
 	 * Set custom rpm limits.
 	 * 
-	 * @param rpmForPin1 Rpm start limit for first leds.
-	 * @param rpmForPin2 Rpm start limit for second leds.
-	 * @param rpmForPin3 Rpm start limit for third leds.
-	 * @param rpmForBlinking  Rpm start limit for blinking.
+	 * @param rpmForPin1
+	 *            Rpm start limit for first leds.
+	 * @param rpmForPin2
+	 *            Rpm start limit for second leds.
+	 * @param rpmForPin3
+	 *            Rpm start limit for third leds.
+	 * @param rpmForBlinking
+	 *            Rpm start limit for blinking.
 	 */
 	public void setCustomLimit(int rpmForPin1, int rpmForPin2, int rpmForPin3,
 			int rpmForBlinking) {
@@ -154,6 +143,22 @@ public class LedManager {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Method to test led blinking.
+	 * 
+	 * @param duration
+	 *            Duration of blinking in millisecond
+	 */
+	public void testLeds(int duration) {
+		ledBlinking.startThread();
+		try {
+			Thread.sleep(duration);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		stopBlinking();
 	}
 
 	/**

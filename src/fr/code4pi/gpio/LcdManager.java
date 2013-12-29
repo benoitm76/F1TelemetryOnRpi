@@ -19,6 +19,7 @@ public class LcdManager {
 	private F1Data f1data;
 	private Thread screenThread;
 	private boolean stopThread;
+	private int refreshTime = LCD_DEFAULT_REFRESH_TIME;
 
 	/**
 	 * Number of rows of the lcd.
@@ -31,37 +32,7 @@ public class LcdManager {
 	/**
 	 * Refresh time of information of lcd.
 	 */
-	public final static int LCD_REFRESH_TIME = 200;
-
-	/**
-	 * Name of RS pin parameter in properties file.
-	 */
-	public final static String LCD_PIN_RS = "lcd_rs";
-
-	/**
-	 * Name of Strobe pin parameter in properties file.
-	 */
-	public final static String LCD_PIN_STROBE = "lcd_strobe";
-
-	/**
-	 * Name of bit 1 pin parameter in properties file.
-	 */
-	public final static String LCD_PIN_BIT_1 = "lcd_bit_1";
-
-	/**
-	 * Name of bit 2 pin parameter in properties file.
-	 */
-	public final static String LCD_PIN_BIT_2 = "lcd_bit_2";
-
-	/**
-	 * Name of bit 3 pin parameter in properties file.
-	 */
-	public final static String LCD_PIN_BIT_3 = "lcd_bit_3";
-
-	/**
-	 * Name of bit 4 pin parameter in properties file.
-	 */
-	public final static String LCD_PIN_BIT_4 = "lcd_bit_4";
+	public final static int LCD_DEFAULT_REFRESH_TIME = 50;
 
 	/**
 	 * Constructor of lcd manager.
@@ -88,6 +59,19 @@ public class LcdManager {
 		lcdString = new char[LCD_ROWS][LCD_COLUMNS];
 		this.f1data = data;
 	}
+	
+	/**
+	 * Method to set a custom refresh time.
+	 * 
+	 * @param refreshTime Custom refresh time in millisecond
+	 */
+	public void setCustomRefreshTime(int refreshTime)
+	{
+		if(refreshTime > 0)		
+			this.refreshTime = refreshTime;
+		else
+			throw new NumberFormatException("Refresh time must be greater than 0");
+	}
 
 	/**
 	 * Start screen refresh.
@@ -104,7 +88,7 @@ public class LcdManager {
 									+ "km/h " + " G : " + f1data.getGear(), 0);
 							lcdWrite(Utils.doubleToTime(f1data.getTime()) + " "
 									+ "P : " + f1data.getPosition(), 1);
-							Thread.sleep(50);
+							Thread.sleep(refreshTime);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
