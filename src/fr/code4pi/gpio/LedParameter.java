@@ -7,6 +7,11 @@ package fr.code4pi.gpio;
  * 
  */
 public class LedParameter {
+	
+	/**
+	 * Name of parameter for leds status.
+	 */
+	public final static String LED_ON = "led_on";
 
 	/**
 	 * Name of first leds pin parameter in properties file.

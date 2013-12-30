@@ -7,6 +7,11 @@ package fr.code4pi.gpio;
  * 
  */
 public final class LcdParameter {
+	
+	/**
+	 * Name of parameter for lcd status.
+	 */
+	public final static String LCD_ON = "lcd_on";
 
 	/**
 	 * Name of RS pin parameter in properties file.

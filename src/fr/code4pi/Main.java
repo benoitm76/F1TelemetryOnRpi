@@ -24,6 +24,7 @@ public class Main {
 
 	private LedManager led;
 	private LcdManager lcd;
+	private boolean lcdStatus = false, ledStatus = false;
 	private F1Data curData;
 	private DatagramSocket localDatagramSocket;
 	private boolean closureInProgress = false;
@@ -45,49 +46,58 @@ public class Main {
 
 		F1TelemetryProperties properties = new F1TelemetryProperties(
 				"config.properties");
-		
-		
-		// Load GPIO pin configuration for led from properties file
-		led = new LedManager(properties.getGpioPinFor(
-				LedParameter.LED_PARAM_PIN_FIRST_LEDS, RaspiPin.GPIO_07),
-				properties.getGpioPinFor(
-						LedParameter.LED_PARAM_PIN_SECOND_LEDS,
-						RaspiPin.GPIO_09),
-				properties.getGpioPinFor(LedParameter.LED_PARAM_PIN_THIRD_LEDS,
-						RaspiPin.GPIO_08));
-		
-		// Load custom limits for led from properties file
-		led.setCustomLimit(properties.getIntProperties(
-				LedParameter.LED_PARAM_RPM_FOR_PIN1, LedManager.RPM_FOR_PIN1),
-				properties.getIntProperties(
-						LedParameter.LED_PARAM_RPM_FOR_PIN2,
-						LedManager.RPM_FOR_PIN2), properties.getIntProperties(
-						LedParameter.LED_PARAM_RPM_FOR_PIN3,
-						LedManager.RPM_FOR_PIN3), properties.getIntProperties(
-						LedParameter.LED_PARAM_RPM_FOR_BLINKING,
-						LedManager.RPM_FOR_BLINKING));
 
-		// Test leds
-		led.testLeds(2000);
+		lcdStatus = properties.getBooleanProperties(LcdParameter.LCD_ON);
+		ledStatus = properties.getBooleanProperties(LedParameter.LED_ON);
+
+		if (ledStatus) {
+			// Load GPIO pin configuration for led from properties file
+			led = new LedManager(properties.getGpioPinFor(
+					LedParameter.LED_PARAM_PIN_FIRST_LEDS, RaspiPin.GPIO_07),
+					properties.getGpioPinFor(
+							LedParameter.LED_PARAM_PIN_SECOND_LEDS,
+							RaspiPin.GPIO_09), properties.getGpioPinFor(
+							LedParameter.LED_PARAM_PIN_THIRD_LEDS,
+							RaspiPin.GPIO_08));
+
+			// Load custom limits for led from properties file
+			led.setCustomLimit(properties.getIntProperties(
+					LedParameter.LED_PARAM_RPM_FOR_PIN1,
+					LedManager.RPM_FOR_PIN1), properties.getIntProperties(
+					LedParameter.LED_PARAM_RPM_FOR_PIN2,
+					LedManager.RPM_FOR_PIN2), properties.getIntProperties(
+					LedParameter.LED_PARAM_RPM_FOR_PIN3,
+					LedManager.RPM_FOR_PIN3), properties.getIntProperties(
+					LedParameter.LED_PARAM_RPM_FOR_BLINKING,
+					LedManager.RPM_FOR_BLINKING));
+
+			// Test leds
+			led.testLeds(2000);
+		}
 
 		curData = new F1Data();
 
-		// Load GPIO pin configuration for lcd from properties file
-		lcd = new LcdManager(properties.getGpioPinFor(
-				LcdParameter.LCD_PARAM_PIN_RS, RaspiPin.GPIO_11),
-				properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_STROBE,
-						RaspiPin.GPIO_10), properties.getGpioPinFor(
-						LcdParameter.LCD_PARAM_PIN_BIT_1, RaspiPin.GPIO_06),
-				properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_BIT_2,
-						RaspiPin.GPIO_05), properties.getGpioPinFor(
-						LcdParameter.LCD_PARAM_PIN_BIT_3, RaspiPin.GPIO_04),
-				properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_BIT_4,
-						RaspiPin.GPIO_01), curData);
-		
-		// Load custom refresh time from properties file
-		lcd.setCustomRefreshTime(properties.getIntProperties(
-				LcdParameter.LCD_PARAM_REFRESH_TIME,
-				LcdManager.LCD_DEFAULT_REFRESH_TIME));
+		if (lcdStatus) {
+
+			// Load GPIO pin configuration for lcd from properties file
+			lcd = new LcdManager(properties.getGpioPinFor(
+					LcdParameter.LCD_PARAM_PIN_RS, RaspiPin.GPIO_11),
+					properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_STROBE,
+							RaspiPin.GPIO_10),
+					properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_BIT_1,
+							RaspiPin.GPIO_06),
+					properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_BIT_2,
+							RaspiPin.GPIO_05),
+					properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_BIT_3,
+							RaspiPin.GPIO_04),
+					properties.getGpioPinFor(LcdParameter.LCD_PARAM_PIN_BIT_4,
+							RaspiPin.GPIO_01), curData);
+
+			// Load custom refresh time from properties file
+			lcd.setCustomRefreshTime(properties.getIntProperties(
+					LcdParameter.LCD_PARAM_REFRESH_TIME,
+					LcdManager.LCD_DEFAULT_REFRESH_TIME));
+		}
 
 		// Execute when leave application (ctrl + c)
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -100,15 +110,21 @@ public class Main {
 					localDatagramSocket.close();
 				}
 				// End all thread
-				led.finishThread();
-				lcd.finishThread();
+				if (ledStatus) {
+					led.finishThread();
+				}
+				if (lcdStatus) {
+					lcd.finishThread();
+				}
 			}
 		});
 
 		byte[] arrayOfByte = new byte[256];
 		try {
 			localDatagramSocket = new DatagramSocket(20777);
-			lcd.startRefresh();
+			if (lcdStatus) {
+				lcd.startRefresh();
+			}
 			System.out.println("Ok");
 			// Infinity loop
 			while (true) {
@@ -126,8 +142,10 @@ public class Main {
 					// Update the F1 data object
 					curData.updateDataWithDoubleArray(datas);
 
-					// Update led status
-					led.updateLed(curData.getEngineRpm());
+					if (ledStatus) {
+						// Update led status
+						led.updateLed(curData.getEngineRpm());
+					}
 				} catch (Exception e) {
 					// Display error message only if we not leave the
 					// application

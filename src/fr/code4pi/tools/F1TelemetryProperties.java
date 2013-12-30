@@ -135,6 +135,16 @@ public class F1TelemetryProperties {
 			e.printStackTrace();
 			return defaultValue;
 		}
+	}
 
+	/**
+	 * Get boolean value from properties file.
+	 * 
+	 * @param param
+	 *            Param name
+	 * @return boolean properties
+	 */
+	public boolean getBooleanProperties(String param) {
+		return "true".equals(properties.getProperty(param));
 	}
 }
