@@ -28,7 +28,7 @@ public class Main {
 	private F1Data curData;
 	private DatagramSocket localDatagramSocket;
 	private boolean closureInProgress = false;
-
+	
 	/**
 	 * Main method.
 	 * 
@@ -43,6 +43,11 @@ public class Main {
 	 * Constructor of the app.
 	 */
 	public Main() {
+		
+		System.out.println("Application startup : F1 telemetry on RPI");
+		System.out.println("Version : " + getClass().getPackage().getImplementationVersion());
+		System.out.println("Author : Benoit Mouquet");
+		System.out.println("Website : http://code4pi.fr");
 
 		F1TelemetryProperties properties = new F1TelemetryProperties(
 				"config.properties");

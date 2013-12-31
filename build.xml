@@ -2,21 +2,42 @@
 <project default="createJar" name="Generate JAR for F1TelemetryOnRpi">
 	<!--ANT 1.7 is required -->
 	<property name="dist" location="dist" />
+	<property name="src" location="src" />
 	<property name="lib" location="lib" />
-	<property name="bin" location="bin" />
+	<property name="build" location="build" />
+	<property name="version" value="1.02" />
 
-	<target name="createJar">
+	<target name="compile" depends="clean">
+		<mkdir dir="${build}" />
+		<javac srcdir="${src}" destdir="${build}" classpath="
+	    	${lib}/pi4j-core.jar;
+	    	${lib}/pi4j-device.jar;
+			${lib}/pi4j-gpio-extension.jar;" includeantruntime="false" />
+	</target>
+
+	<target name="createJar" depends="compile">
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}" />
-		<jar destfile="${dist}/F1TelemetryOnRpi.jar">
+		<jar destfile="${dist}/F1TelemetryOnRpi_v${version}.jar">
 			<!-- Include libs into jar -->
 			<zipgroupfileset dir="${lib}" includes="*.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="fr.code4pi.Main" />
 				<attribute name="Class-Path" value="pi4j-core.jar pi4j-device.jar pi4j-gpio-extension.jar" />
+				<attribute name="Implementation-Version" value="${version}"/>
 			</manifest>
-			<fileset dir="${bin}" />
+			<fileset dir="${build}" />
 		</jar>
 		<copy file="config.properties" todir="${dist}" />
+		<copy file="LICENSE.txt" todir="${dist}" />
+	</target>
+
+	<target name="createZip" depends="createJar">
+		<zip destfile="${dist}/F1TelemetryOnRpi_v${version}.zip" basedir="${dist}/" excludes="*zip" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist}" />
+		<delete dir="${build}" />
 	</target>
 </project>
