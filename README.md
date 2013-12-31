@@ -7,7 +7,9 @@ Afin de pouvoir compiler ce projet, vous aurez besoin de la librairie **Pi4J** (
 
 Les fichiers .jar de la librairie Pi4J devront être placés dans un dossier **lib** à la racine de votre projet.
 
-Afin d'obtenir un fichier .jar à exécuter sur votre Raspberry Pi, il vous suffit de compiler le projet avec ant. Le .jar sera alors disponible au sien du dossier dist.
+Afin d'obtenir un fichier .jar à exécuter sur votre Raspberry Pi, il vous suffit de compiler le projet avec ant. Le .jar sera alors disponible au sein du dossier dist.
+
+Vous pouvez retrouver le tutoriel complet sur notre site à l'adresse suivante : [http://code4pi.fr/2013/11/systeme-de-led-et-ecran-lcd-relie-au-jeu-f1-2013/](http://code4pi.fr/2013/11/systeme-de-led-et-ecran-lcd-relie-au-jeu-f1-2013/)
 
 Fichier de configuration
 ------------------------

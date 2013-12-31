@@ -5,10 +5,13 @@
 	<property name="src" location="src" />
 	<property name="lib" location="lib" />
 	<property name="build" location="build" />
+	<!-- Application version number -->
 	<property name="version" value="1.02" />
 
 	<target name="compile" depends="clean">
+		<!-- Create build folder -->
 		<mkdir dir="${build}" />
+		<!-- Compile sources -->
 		<javac srcdir="${src}" destdir="${build}" classpath="
 	    	${lib}/pi4j-core.jar;
 	    	${lib}/pi4j-device.jar;
@@ -32,10 +35,12 @@
 		<copy file="LICENSE.txt" todir="${dist}" />
 	</target>
 
+	<!-- Create zip file of the application -->
 	<target name="createZip" depends="createJar">
 		<zip destfile="${dist}/F1TelemetryOnRpi_v${version}.zip" basedir="${dist}/" excludes="*zip" />
 	</target>
 
+	<!-- Clean directories -->
 	<target name="clean">
 		<delete dir="${dist}" />
 		<delete dir="${build}" />

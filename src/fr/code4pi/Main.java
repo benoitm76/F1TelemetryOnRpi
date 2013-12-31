@@ -101,7 +101,22 @@ public class Main {
 			// Load custom refresh time from properties file
 			lcd.setCustomRefreshTime(properties.getIntProperties(
 					LcdParameter.LCD_PARAM_REFRESH_TIME,
-					LcdManager.LCD_DEFAULT_REFRESH_TIME));
+					LcdManager.LCD_DEFAULT_REFRESH_TIME));		
+			
+			try {
+				lcd.lcdWrite("F1telemetryonRPI", 0);
+				lcd.lcdWrite("Version : " + getClass().getPackage().getImplementationVersion(), 1);
+				Thread.sleep(2000);
+				lcd.lcdWrite("Author :", 0);
+				lcd.lcdWrite("Benoit Mouquet", 1);
+				Thread.sleep(1000);
+				lcd.lcdWrite("Website :", 0);
+				lcd.lcdWrite("code4pi.fr", 1);
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		// Execute when leave application (ctrl + c)
